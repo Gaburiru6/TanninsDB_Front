@@ -1,0 +1,21 @@
+<div class="login-container">
+  <div class="login-card">
+    <h1>TanninsDB</h1>
+    <p>Base de dados de taninos e compostos fenólicos</p>
+
+    @if (loading) {
+      <div class="loading">Autenticando...</div>
+    }
+
+    @if (error) {
+      <div class="error">{{ error }}</div>
+    }
+
+    @if (!loading) {
+      <button (click)="login()" class="orcid-btn">
+        <img src="https://orcid.org/sites/default/files/images/orcid_24x24.png" alt="ORCID" />
+        Entrar com ORCID
+      </button>
+    }
+  </div>
+</div>

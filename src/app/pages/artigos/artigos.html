@@ -1,0 +1,64 @@
+<div class="container">
+  <header>
+    <h1>TanninsDB</h1>
+    <div class="user-info">
+      <span>{{ nomeUsuario }}</span>
+      <button (click)="logout()" class="btn-logout">Sair</button>
+    </div>
+  </header>
+
+  <div class="toolbar">
+    <h2>Artigos</h2>
+    <button (click)="novo()" class="btn-primary">+ Novo Artigo</button>
+    <p>loading: {{ loading }}</p>
+<p>total: {{ artigos.length }}</p>
+  </div>
+
+  @if (loading) {
+    <div class="loading">Carregando...</div>
+  }
+
+  @if (error) {
+    <div class="error">{{ error }}</div>
+  }
+
+  @if (!loading && artigos.length > 0) {
+    <table>
+      <thead>
+        <tr>
+          <th>Título</th>
+          <th>Espécie</th>
+          <th>Metodologia</th>
+          <th>Taninos</th>
+          <th>Fenólicos</th>
+          <th>Status</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (artigo of artigos; track artigo.id) {
+          <tr>
+            <td>{{ artigo.titulo }}</td>
+            <td>{{ artigo.especie }}</td>
+            <td>{{ artigo.metodologia }}</td>
+            <td>{{ artigo.taninos }}</td>
+            <td>{{ artigo.fenolicos }}</td>
+            <td>
+              <span class="badge {{ artigo.status.toLowerCase() }}">
+                {{ artigo.status }}
+              </span>
+            </td>
+            <td>
+              <button (click)="editar(artigo.id)" class="btn-edit">Editar</button>
+              <button (click)="remover(artigo.id)" class="btn-delete">Remover</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+
+  @if (!loading && artigos.length === 0) {
+    <div class="empty">Nenhum artigo cadastrado ainda.</div>
+  }
+</div>
