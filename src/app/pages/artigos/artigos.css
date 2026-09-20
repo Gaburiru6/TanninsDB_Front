@@ -95,3 +95,20 @@ tr:hover { background: #fafafa; }
 
 .loading, .empty { color: #666; padding: 24px 0; }
 .error { color: #c62828; padding: 12px 0; }
+
+.map-wrapper {
+  margin-right: 0;
+  margin-left: auto;
+  width: 50%;
+  height: 350px;
+  margin-bottom: 24px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e0e0e0;
+  z-index: 1;
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+}

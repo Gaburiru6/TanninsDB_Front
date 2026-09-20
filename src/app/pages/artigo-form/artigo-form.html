@@ -38,7 +38,13 @@
 
         <div class="form-group">
           <label>Estação</label>
-          <input [(ngModel)]="artigo.estacao" name="estacao" />
+          <select [(ngModel)]="artigo.estacao" name="estacao">
+            <option value="" disabled selected>Selecione...</option>
+            <option value="Primavera">Primavera</option>
+            <option value="Verão">Verão</option>
+            <option value="Outono">Outono</option>
+            <option value="Inverno">Inverno</option>
+          </select>
         </div>
 
         <div class="form-group">
@@ -53,22 +59,22 @@
 
         <div class="form-group">
           <label>Fenólicos Totais</label>
-          <input [(ngModel)]="artigo.fenolicos" name="fenolicos" type="number" step="0.01" />
+          <input [ngModel]="artigo.fenolicos" (ngModelChange)="tratarNumero('fenolicos', $event)" name="fenolicos" type="text" inputmode="decimal" />
         </div>
 
         <div class="form-group">
           <label>Taninos Totais</label>
-          <input [(ngModel)]="artigo.taninos" name="taninos" type="number" step="0.01" />
+          <input [ngModel]="artigo.taninos" (ngModelChange)="tratarNumero('taninos', $event)" name="taninos" type="text" inputmode="decimal" />
         </div>
 
         <div class="form-group">
           <label>Taninos Condensados</label>
-          <input [(ngModel)]="artigo.tcondensados" name="tcondensados" type="number" step="0.01" />
+          <input [ngModel]="artigo.tcondensados" (ngModelChange)="tratarNumero('tcondensados', $event)" name="tcondensados" type="text" inputmode="decimal" />
         </div>
 
         <div class="form-group">
           <label>Taninos Hidrolisáveis</label>
-          <input [(ngModel)]="artigo.thidrolisaveis" name="thidrolisaveis" type="number" step="0.01" />
+          <input [ngModel]="artigo.thidrolisaveis" (ngModelChange)="tratarNumero('thidrolisaveis', $event)" name="thidrolisaveis" type="text" inputmode="decimal" />
         </div>
 
       </div>

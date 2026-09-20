@@ -10,12 +10,15 @@
   <div class="toolbar">
     <h2>Artigos</h2>
     <button (click)="novo()" class="btn-primary">+ Novo Artigo</button>
-    <p>loading: {{ loading }}</p>
-<p>total: {{ artigos.length }}</p>
+  </div>
+
+  <!-- CONTAINER DO MAPA -->
+  <div class="map-wrapper">
+    <div id="map"></div>
   </div>
 
   @if (loading) {
-    <div class="loading">Carregando...</div>
+    <div class="loading">Carregando dados e desenhando mapa...</div>
   }
 
   @if (error) {

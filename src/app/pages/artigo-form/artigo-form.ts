@@ -1,4 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ArtigoService } from '../../core/services/artigo.service';
@@ -7,7 +8,7 @@ import { ArtigoRequest } from '../../core/models/artigo.model';
 @Component({
   selector: 'app-artigo-form',
   standalone: true,
-  imports: [FormsModule],
+  imports: [CommonModule, FormsModule], // Adicionado CommonModule para o *ngIf do HTML funcionar
   templateUrl: './artigo-form.html',
   styleUrl: './artigo-form.css'
 })
@@ -71,11 +72,36 @@ export class ArtigoFormComponent implements OnInit {
     }
   }
 
+  tratarNumero(campo: keyof ArtigoRequest, valor: string | number): void {
+    if (valor === null || valor === undefined || valor === '') {
+      (this.artigo as any)[campo] = 0;
+      return;
+    }
+    
+    if (typeof valor === 'string') {
+      // Substitui vírgula por ponto e remove letras
+      const valorFormatado = valor.replace(',', '.').replace(/[^0-9.]/g, '');
+      (this.artigo as any)[campo] = valorFormatado;
+    } else {
+      (this.artigo as any)[campo] = valor;
+    }
+  }
+
   salvar(): void {
     this.loading = true;
+    
+    // Força a conversão para número (Double/Float) antes de enviar para evitar erros no backend
+    const payloadParaSalvar: ArtigoRequest = {
+      ...this.artigo,
+      fenolicos: Number(this.artigo.fenolicos) || 0,
+      taninos: Number(this.artigo.taninos) || 0,
+      tcondensados: Number(this.artigo.tcondensados) || 0,
+      thidrolisaveis: Number(this.artigo.thidrolisaveis) || 0
+    };
+
     const operacao = this.editando
-      ? this.artigoService.atualizar(this.artigoId!, this.artigo)
-      : this.artigoService.salvar(this.artigo);
+      ? this.artigoService.atualizar(this.artigoId!, payloadParaSalvar)
+      : this.artigoService.salvar(payloadParaSalvar);
 
     operacao.subscribe({
       next: () => this.router.navigate(['/artigos']),
