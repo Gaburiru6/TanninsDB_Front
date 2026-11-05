@@ -1,4 +1,12 @@
+declare global {
+  interface Window {
+    __env?: {
+      apiUrl?: string;
+    };
+  }
+}
+
 export const environment = {
-  production: false,
-  apiUrl: 'https://tanninsapi.murasaki.sbs'
+  production: true,
+  apiUrl: (typeof window !== 'undefined' && window.__env?.apiUrl) || 'https://tanninsapi.murasaki.sbs'
 };

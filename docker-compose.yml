@@ -3,8 +3,12 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        API_URL: ${API_URL:-https://tanninsapi.murasaki.sbs}
     container_name: tannins_front
     restart: always
+    environment:
+      - API_URL=${API_URL:-https://tanninsapi.murasaki.sbs}
     ports:
       - "${FRONT_PORT:-80}:80"
     networks:
