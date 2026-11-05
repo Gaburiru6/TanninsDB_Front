@@ -333,11 +333,11 @@
                 <div class="grid grid-cols-2 gap-2 mt-4 p-3 rounded-xl bg-surface border border-outline-variant/20 text-xs font-label">
                   <div>
                     <span class="text-on-surface-variant block text-[10px] uppercase font-bold">Fenólicos Totais:</span>
-                    <span class="font-bold text-on-surface font-mono text-sm">{{ artigo.fenolicos ?? 0 }} %</span>
+                    <span class="font-bold text-on-surface font-mono text-sm">{{ artigo.fenolicos }} %</span>
                   </div>
                   <div>
                     <span class="text-on-surface-variant block text-[10px] uppercase font-bold">Taninos Totais:</span>
-                    <span class="font-bold text-primary font-mono text-sm">{{ artigo.taninos ?? 0 }} %</span>
+                    <span class="font-bold text-primary font-mono text-sm">{{ artigo.taninos }} %</span>
                   </div>
                   @if (artigo.tCondensados || artigo.tcondensados) {
                     <div class="col-span-2 pt-1 border-t border-surface-variant/30 flex justify-between text-[11px]">

@@ -131,7 +131,7 @@ export class ArtigosComponent implements OnInit, AfterViewInit {
     if (!this.map) return;
 
     this.markersLayer.clearLayers();
-    const bounds: L.LatLngExpression[] = [];
+    const bounds = L.latLngBounds([]);
 
     for (const artigo of this.artigosFiltrados) {
       let lat = artigo.latitude;
@@ -147,7 +147,7 @@ export class ArtigosComponent implements OnInit, AfterViewInit {
       }
 
       if (lat !== undefined && lon !== undefined && !isNaN(lat) && !isNaN(lon)) {
-        bounds.push([lat, lon]);
+        bounds.extend([lat, lon]);
 
         const marker = L.marker([lat, lon]).addTo(this.markersLayer);
         const popupContent = `
@@ -177,7 +177,7 @@ export class ArtigosComponent implements OnInit, AfterViewInit {
       }
     }
 
-    if (bounds.length > 0 && this.map) {
+    if (bounds.isValid() && this.map) {
       // Ajusta o zoom para enquadrar os marcadores
       this.map.fitBounds(bounds, { padding: [40, 40], maxZoom: 12 });
     }
