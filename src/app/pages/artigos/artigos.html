@@ -1,67 +1,432 @@
-<div class="container">
-  <header>
-    <h1>TanninsDB</h1>
-    <div class="user-info">
-      <span>{{ nomeUsuario }}</span>
-      <button (click)="logout()" class="btn-logout">Sair</button>
+<div class="min-h-screen bg-surface flex flex-col font-body text-on-surface">
+
+  <!-- TOP HEADER DA PLATAFORMA -->
+  <header class="sticky top-0 w-full z-40 bg-surface/95 backdrop-blur-md shadow-[0_1px_8px_rgba(46,50,48,0.04)] border-b border-surface-variant/30">
+    <div class="h-20 max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between gap-6">
+      
+      <!-- Logo & Título -->
+      <div class="flex items-center gap-3 shrink-0 cursor-pointer" (click)="limparFiltros()">
+        <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shadow-xs">
+          <span class="material-symbols-outlined text-2xl">spa</span>
+        </div>
+        <div class="flex flex-col">
+          <span class="font-headline text-xl font-bold tracking-tight text-on-surface leading-none">TanninsDB</span>
+          <span class="text-[11px] font-label uppercase tracking-widest text-primary font-semibold mt-1">Ciência Aberta & Fitocompostos</span>
+        </div>
+      </div>
+
+      <!-- Barra de Navegação -->
+      <nav class="hidden md:flex items-center gap-2 text-sm font-label">
+        <a href="#catalogo-artigos" class="px-3.5 py-1.5 text-on-surface-variant hover:text-primary transition-colors rounded-lg font-medium">Catálogo</a>
+        <a href="#mapa-distribuicao" class="px-3.5 py-1.5 text-on-surface-variant hover:text-primary transition-colors rounded-lg font-medium">Mapa Interativo</a>
+        @if (isLoggedIn) {
+          <button (click)="novo()" class="px-3.5 py-1.5 text-primary bg-primary/10 hover:bg-primary/20 transition-colors rounded-lg font-bold flex items-center gap-1">
+            <span class="material-symbols-outlined text-base">add_circle</span>
+            Cadastrar Artigo
+          </button>
+        }
+      </nav>
+
+      <!-- Ações de Usuário / Login -->
+      <div class="flex items-center gap-3 shrink-0">
+        @if (isLoggedIn) {
+          <div class="flex items-center gap-2.5 bg-surface-container-low px-3 py-1.5 rounded-xl border border-outline-variant/30">
+            <div class="w-7 h-7 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold text-xs">
+              {{ nomeUsuario.charAt(0) }}
+            </div>
+            <div class="flex flex-col text-left">
+              <span class="text-xs font-label font-bold text-on-surface max-w-[120px] truncate">{{ nomeUsuario }}</span>
+              <span class="text-[10px] text-on-surface-variant uppercase font-medium">{{ userRole }}</span>
+            </div>
+            <button (click)="logout()" title="Sair da sessão" class="ml-1 text-on-surface-variant hover:text-error transition-colors">
+              <span class="material-symbols-outlined text-lg">logout</span>
+            </button>
+          </div>
+          <button (click)="novo()" class="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-label font-bold bg-primary text-on-primary hover:bg-primary-container hover:text-on-primary-container transition-all shadow-sm">
+            <span class="material-symbols-outlined text-base">add</span>
+            Novo Artigo
+          </button>
+        } @else {
+          <button (click)="login()" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-label font-bold bg-primary text-on-primary hover:bg-primary-container hover:text-on-primary-container transition-all shadow-sm">
+            <span class="material-symbols-outlined text-base">login</span>
+            Entrar com ORCID
+          </button>
+        }
+      </div>
+
     </div>
   </header>
 
-  <div class="toolbar">
-    <h2>Artigos</h2>
-    <button (click)="novo()" class="btn-primary">+ Novo Artigo</button>
-  </div>
+  <main class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-8">
 
-  <!-- CONTAINER DO MAPA -->
-  <div class="map-wrapper">
-    <div id="map"></div>
-  </div>
+    <!-- HERO BANNER CIENTÍFICO -->
+    <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-[#3d6849] to-primary-container text-on-primary shadow-lg p-8 sm:p-10 lg:p-12">
+      <div class="absolute -right-20 -top-20 w-96 h-96 rounded-full bg-white/10 blur-3xl pointer-events-none"></div>
+      <div class="absolute right-1/3 -bottom-24 w-80 h-80 rounded-full bg-tertiary-fixed/15 blur-2xl pointer-events-none"></div>
+      
+      <div class="relative z-10 max-w-3xl">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-xs font-semibold tracking-wide uppercase font-label mb-4 text-primary-fixed">
+          <span class="material-symbols-outlined text-sm">spa</span>
+          Consórcio Fitoquímico e Botânica Estrutural
+        </div>
+        <h1 class="font-headline text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white leading-tight">
+          Base Aberta de Conhecimento e Distribuição de Taninos e Polifenóis
+        </h1>
+        <p class="font-body text-base sm:text-lg text-primary-fixed/90 mt-4 leading-relaxed max-w-2xl">
+          Centralização de dados científicos, coordenadas geoespaciais e quantificação fitoquímica de metabólitos secundários com metodologia padronizada de extração.
+        </p>
 
-  @if (loading) {
-    <div class="loading">Carregando dados e desenhando mapa...</div>
-  }
+        <div class="mt-6 flex flex-wrap items-center gap-3">
+          <a href="#catalogo-artigos" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-surface text-primary font-semibold text-xs sm:text-sm shadow-md hover:bg-surface-container transition-all font-label">
+            <span class="material-symbols-outlined text-base">dataset</span>
+            Explorar Catálogo Científico
+          </a>
+          <a href="#mapa-distribuicao" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/20 hover:bg-white/30 text-white font-semibold text-xs sm:text-sm backdrop-blur-sm transition-all font-label">
+            <span class="material-symbols-outlined text-base">travel_explore</span>
+            Ver Mapa Interativo
+          </a>
+          @if (isLoggedIn) {
+            <button (click)="novo()" class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-tertiary text-on-tertiary hover:bg-tertiary-container font-semibold text-xs sm:text-sm transition-all font-label shadow-sm">
+              <span class="material-symbols-outlined text-base">add_circle</span>
+              Cadastrar Registro
+            </button>
+          }
+        </div>
+      </div>
+    </div>
 
-  @if (error) {
-    <div class="error">{{ error }}</div>
-  }
+    <!-- 4 CARDS DE ESTATÍSTICAS -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      
+      <!-- Stat 1: Artigos -->
+      <div class="bg-surface-container-low rounded-xl p-5 shadow-xs border border-outline-variant/30 transition-all hover:shadow-md hover:-translate-y-0.5">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-label uppercase font-bold tracking-wider text-secondary">Repositório Curado</span>
+          <div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+            <span class="material-symbols-outlined text-2xl">menu_book</span>
+          </div>
+        </div>
+        <div class="font-headline text-3xl font-bold text-on-surface">{{ totalArtigos }}</div>
+        <p class="text-xs text-on-surface-variant mt-1 font-body">Registros Científicos Cadastrados</p>
+        <div class="mt-3 flex items-center gap-1.5 text-xs text-primary font-semibold font-label">
+          <span class="material-symbols-outlined text-sm">verified</span>
+          Indexação padronizada
+        </div>
+      </div>
 
-  @if (!loading && artigos.length > 0) {
-    <table>
-      <thead>
-        <tr>
-          <th>Título</th>
-          <th>Espécie</th>
-          <th>Metodologia</th>
-          <th>Taninos</th>
-          <th>Fenólicos</th>
-          <th>Status</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (artigo of artigos; track artigo.id) {
-          <tr>
-            <td>{{ artigo.titulo }}</td>
-            <td>{{ artigo.especie }}</td>
-            <td>{{ artigo.metodologia }}</td>
-            <td>{{ artigo.taninos }}</td>
-            <td>{{ artigo.fenolicos }}</td>
-            <td>
-              <span class="badge {{ artigo.status.toLowerCase() }}">
-                {{ artigo.status }}
-              </span>
-            </td>
-            <td>
-              <button (click)="editar(artigo.id)" class="btn-edit">Editar</button>
-              <button (click)="remover(artigo.id)" class="btn-delete">Remover</button>
-            </td>
-          </tr>
+      <!-- Stat 2: Espécies -->
+      <div class="bg-surface-container-low rounded-xl p-5 shadow-xs border border-outline-variant/30 transition-all hover:shadow-md hover:-translate-y-0.5">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-label uppercase font-bold tracking-wider text-secondary">Taxonomia Vegetal</span>
+          <div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-tertiary">
+            <span class="material-symbols-outlined text-2xl">potted_plant</span>
+          </div>
+        </div>
+        <div class="font-headline text-3xl font-bold text-on-surface">{{ totalEspecies }}</div>
+        <p class="text-xs text-on-surface-variant mt-1 font-body">Espécies Botânicas Mapeadas</p>
+        <div class="mt-3 flex items-center gap-1.5 text-xs text-tertiary font-semibold font-label">
+          <span class="material-symbols-outlined text-sm">eco</span>
+          Flora & Funga catalogadas
+        </div>
+      </div>
+
+      <!-- Stat 3: Georreferenciamento -->
+      <div class="bg-surface-container-low rounded-xl p-5 shadow-xs border border-outline-variant/30 transition-all hover:shadow-md hover:-translate-y-0.5">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-label uppercase font-bold tracking-wider text-secondary">Georreferenciamento</span>
+          <div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+            <span class="material-symbols-outlined text-2xl">explore</span>
+          </div>
+        </div>
+        <div class="font-headline text-3xl font-bold text-on-surface">{{ totalLocais }}</div>
+        <p class="text-xs text-on-surface-variant mt-1 font-body">Localidades e Biomas de Coleta</p>
+        <div class="mt-3 flex items-center gap-1.5 text-xs text-secondary font-semibold font-label">
+          <span class="material-symbols-outlined text-sm">pin_drop</span>
+          Coordenadas geodésicas ativas
+        </div>
+      </div>
+
+      <!-- Stat 4: Metodologias -->
+      <div class="bg-surface-container-low rounded-xl p-5 shadow-xs border border-outline-variant/30 transition-all hover:shadow-md hover:-translate-y-0.5">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-label uppercase font-bold tracking-wider text-secondary">Fitoquímica Analítica</span>
+          <div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-tertiary">
+            <span class="material-symbols-outlined text-2xl">science</span>
+          </div>
+        </div>
+        <div class="font-headline text-3xl font-bold text-on-surface">{{ totalMetodologias }}</div>
+        <p class="text-xs text-on-surface-variant mt-1 font-body">Métodos de Extração & Ensaio</p>
+        <div class="mt-3 flex items-center gap-1.5 text-xs text-primary font-semibold font-label">
+          <span class="material-symbols-outlined text-sm">precision_manufacturing</span>
+          HPLC, Folin-Ciocalteu, Porter
+        </div>
+      </div>
+
+    </div>
+
+    <!-- BARRA DE FILTROS MULTIVARIADOS -->
+    <div class="bg-surface-container-low rounded-2xl p-5 sm:p-6 shadow-xs border border-outline-variant/30 flex flex-col gap-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-surface-variant/40">
+        <div>
+          <h2 class="font-headline text-lg sm:text-xl font-bold text-on-surface">Filtros de Pesquisa Científica</h2>
+          <p class="text-xs text-on-surface-variant mt-0.5 font-body">Refine os dados plotados no mapa e na lista de publicações.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button (click)="limparFiltros()" class="px-3 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-xs font-label font-semibold text-on-surface-variant flex items-center gap-1 transition-colors">
+            <span class="material-symbols-outlined text-base">restart_alt</span>
+            Limpar Filtros
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <!-- Busca Textual -->
+        <div class="flex flex-col">
+          <label class="text-xs font-label font-semibold text-on-surface-variant mb-1.5 flex items-center gap-1">
+            <span class="material-symbols-outlined text-sm text-primary">search</span>
+            Busca Textual (Título, Espécie, Local)
+          </label>
+          <div class="relative flex items-center bg-surface rounded-xl px-3 py-2 shadow-xs border border-outline-variant/30 focus-within:ring-2 focus-within:ring-primary">
+            <input [(ngModel)]="filtroTexto" (ngModelChange)="aplicarFiltros()" placeholder="Ex: Mimosa, Folin, Caicó..." class="w-full bg-transparent text-xs text-on-surface focus:outline-none font-body" />
+            @if (filtroTexto) {
+              <button (click)="filtroTexto = ''; aplicarFiltros()" class="text-on-surface-variant hover:text-on-surface text-xs">
+                <span class="material-symbols-outlined text-sm">close</span>
+              </button>
+            }
+          </div>
+        </div>
+
+        <!-- Filtro por Estação -->
+        <div class="flex flex-col">
+          <label class="text-xs font-label font-semibold text-on-surface-variant mb-1.5 flex items-center gap-1">
+            <span class="material-symbols-outlined text-sm text-tertiary">cyclone</span>
+            Estação Sazonal da Coleta
+          </label>
+          <select [(ngModel)]="filtroEstacao" (ngModelChange)="aplicarFiltros()" class="w-full bg-surface rounded-xl px-3 py-2 text-xs text-on-surface shadow-xs border border-outline-variant/30 focus:outline-none focus:ring-2 focus:ring-primary font-body">
+            <option value="">Todas as Estações</option>
+            <option value="Primavera">Primavera</option>
+            <option value="Verão">Verão</option>
+            <option value="Outono">Outono</option>
+            <option value="Inverno">Inverno</option>
+          </select>
+        </div>
+
+        <!-- Filtro por Status -->
+        <div class="flex flex-col">
+          <label class="text-xs font-label font-semibold text-on-surface-variant mb-1.5 flex items-center gap-1">
+            <span class="material-symbols-outlined text-sm text-secondary">verified_user</span>
+            Status de Curadoria
+          </label>
+          <select [(ngModel)]="filtroStatus" (ngModelChange)="aplicarFiltros()" class="w-full bg-surface rounded-xl px-3 py-2 text-xs text-on-surface shadow-xs border border-outline-variant/30 focus:outline-none focus:ring-2 focus:ring-primary font-body">
+            <option value="">Todos os Status</option>
+            <option value="APROVADO">Aprovados</option>
+            <option value="PENDENTE">Pendentes</option>
+            <option value="REPROVADO">Reprovados</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEÇÃO DO MAPA INTERATIVO -->
+    <section id="mapa-distribuicao" class="bg-surface-container-low rounded-2xl overflow-hidden shadow-xs border border-outline-variant/30 flex flex-col">
+      <div class="p-4 sm:px-6 bg-surface-container flex flex-wrap items-center justify-between gap-3 border-b border-surface-variant/40">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-primary animate-ping"></span>
+          <span class="font-headline font-bold text-sm sm:text-base text-on-surface">Distribuição Geoespacial dos Espécimes Amostrados</span>
+        </div>
+        <div class="flex items-center gap-2 text-xs font-label text-on-surface-variant">
+          <span class="inline-block w-2.5 h-2.5 rounded-full bg-primary mr-1"></span>
+          <span>Marcadores com Dados GPS Reais</span>
+        </div>
+      </div>
+
+      <!-- Canvas do Mapa Leaflet -->
+      <div class="relative w-full h-[450px] sm:h-[520px] bg-surface-container">
+        <div id="map" class="w-full h-full z-10"></div>
+      </div>
+    </section>
+
+    <!-- ALERTA DE ERRO -->
+    @if (error) {
+      <div class="p-4 rounded-xl bg-error-container text-error text-xs font-label flex items-center gap-2">
+        <span class="material-symbols-outlined text-lg">error</span>
+        <span>{{ error }}</span>
+      </div>
+    }
+
+    <!-- SEÇÃO: CATÁLOGO DE ARTIGOS CIENTÍFICOS -->
+    <section id="catalogo-artigos" class="flex flex-col gap-6">
+      
+      <!-- Cabeçalho do Catálogo -->
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-2 border-b border-surface-variant/30">
+        <div>
+          <div class="flex items-center gap-2 text-xs font-label uppercase tracking-widest text-primary font-bold mb-1">
+            <span class="material-symbols-outlined text-sm">library_books</span>
+            Repositório Científico
+          </div>
+          <h2 class="font-headline text-2xl sm:text-3xl font-bold text-on-surface">
+            Publicações Indexadas
+          </h2>
+          <p class="text-xs sm:text-sm text-on-surface-variant mt-1 font-body">
+            Exibindo {{ artigosFiltrados.length }} registro(s) fitoquímico(s) de taninos vegetais.
+          </p>
+        </div>
+
+        @if (isLoggedIn) {
+          <button (click)="novo()" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-on-primary hover:bg-primary-container font-label font-bold text-xs shadow-sm transition-all">
+            <span class="material-symbols-outlined text-base">add</span>
+            Cadastrar Novo Artigo
+          </button>
         }
-      </tbody>
-    </table>
-  }
+      </div>
 
-  @if (!loading && artigos.length === 0) {
-    <div class="empty">Nenhum artigo cadastrado ainda.</div>
-  }
+      <!-- Estado de Carregamento -->
+      @if (loading) {
+        <div class="flex flex-col items-center justify-center py-16 gap-3 text-primary">
+          <span class="material-symbols-outlined text-4xl animate-spin">progress_activity</span>
+          <span class="font-label text-sm text-on-surface-variant">Carregando dados científicos...</span>
+        </div>
+      }
+
+      <!-- Lista de Artigos: Grid de Cards -->
+      @if (!loading && artigosFiltrados.length > 0) {
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          @for (artigo of artigosFiltrados; track artigo.id) {
+            <article class="bg-surface-container-low rounded-2xl p-5 shadow-xs border border-outline-variant/30 hover:shadow-md hover:border-primary/40 transition-all flex flex-col justify-between group">
+              
+              <div>
+                <!-- Badges de Status & Local -->
+                <div class="flex items-start justify-between gap-2 mb-3">
+                  <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-label font-bold uppercase"
+                        [ngClass]="{
+                          'bg-primary/15 text-primary': artigo.status === 'APROVADO',
+                          'bg-secondary-container text-on-secondary-container': artigo.status === 'PENDENTE',
+                          'bg-error-container text-error': artigo.status === 'REPROVADO'
+                        }">
+                    <span class="material-symbols-outlined text-xs">
+                      {{ artigo.status === 'APROVADO' ? 'verified' : (artigo.status === 'PENDENTE' ? 'hourglass_top' : 'cancel') }}
+                    </span>
+                    {{ artigo.status }}
+                  </span>
+
+                  <span class="px-2 py-0.5 rounded text-[11px] font-label bg-surface-container text-on-surface-variant font-medium">
+                    📍 {{ artigo.local || 'Local não inf.' }}
+                  </span>
+                </div>
+
+                <!-- Espécie Botânica & Título -->
+                <h3 class="font-headline text-lg font-bold text-on-surface group-hover:text-primary transition-colors">
+                  <span class="italic">{{ artigo.especie }}</span>
+                </h3>
+                <h4 class="text-xs font-body text-on-surface-variant mt-1.5 line-clamp-2 leading-relaxed" [title]="artigo.titulo">
+                  {{ artigo.titulo }}
+                </h4>
+
+                <!-- Metadados de Coleta -->
+                <div class="flex flex-wrap items-center gap-2 mt-3 text-[11px] font-label text-on-surface-variant">
+                  <span class="px-2 py-0.5 rounded bg-surface-container">Parte: {{ artigo.partePlanta || 'N/I' }}</span>
+                  <span class="px-2 py-0.5 rounded bg-surface-container">Estação: {{ artigo.estacao || 'N/I' }}</span>
+                  <span class="px-2 py-0.5 rounded bg-surface-container">Método: {{ artigo.metodologia || 'N/I' }}</span>
+                </div>
+
+                <!-- Métricas Fitoquímicas -->
+                <div class="grid grid-cols-2 gap-2 mt-4 p-3 rounded-xl bg-surface border border-outline-variant/20 text-xs font-label">
+                  <div>
+                    <span class="text-on-surface-variant block text-[10px] uppercase font-bold">Fenólicos Totais:</span>
+                    <span class="font-bold text-on-surface font-mono text-sm">{{ artigo.fenolicos ?? 0 }} %</span>
+                  </div>
+                  <div>
+                    <span class="text-on-surface-variant block text-[10px] uppercase font-bold">Taninos Totais:</span>
+                    <span class="font-bold text-primary font-mono text-sm">{{ artigo.taninos ?? 0 }} %</span>
+                  </div>
+                  @if (artigo.tCondensados || artigo.tcondensados) {
+                    <div class="col-span-2 pt-1 border-t border-surface-variant/30 flex justify-between text-[11px]">
+                      <span class="text-on-surface-variant">Condensados:</span>
+                      <span class="font-bold text-primary font-mono">{{ artigo.tCondensados ?? artigo.tcondensados }} %</span>
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <!-- Ações no Rodapé do Card -->
+              <div class="mt-4 pt-3 border-t border-surface-variant/40 flex items-center justify-between">
+                @if (artigo.link) {
+                  <a [href]="artigo.link" target="_blank" rel="noopener noreferrer" class="text-xs text-primary font-bold hover:underline flex items-center gap-1 font-label">
+                    <span class="material-symbols-outlined text-sm">open_in_new</span>
+                    DOI / Link
+                  </a>
+                } @else {
+                  <span class="text-[11px] text-on-surface-variant font-mono">Sem DOI</span>
+                }
+
+                @if (isLoggedIn) {
+                  <div class="flex items-center gap-1">
+                    <button (click)="editar(artigo.id)" class="px-2.5 py-1 rounded-lg bg-surface-container hover:bg-surface-container-high text-xs font-label font-bold text-on-surface transition-colors">
+                      Editar
+                    </button>
+                    <button (click)="remover(artigo.id)" class="p-1 rounded-lg hover:bg-error-container text-on-surface-variant hover:text-error transition-colors" title="Remover Artigo">
+                      <span class="material-symbols-outlined text-base">delete</span>
+                    </button>
+                  </div>
+                }
+              </div>
+
+            </article>
+          }
+        </div>
+      }
+
+      <!-- Nenhum Artigo Encontrado -->
+      @if (!loading && artigosFiltrados.length === 0) {
+        <div class="bg-surface-container-low rounded-2xl p-12 text-center border border-outline-variant/30 flex flex-col items-center gap-3">
+          <div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant">
+            <span class="material-symbols-outlined text-2xl">search_off</span>
+          </div>
+          <h3 class="font-headline text-lg font-bold text-on-surface">Nenhum registro encontrado</h3>
+          <p class="text-xs text-on-surface-variant font-body max-w-md">
+            Não foram encontrados artigos científicos que correspondam aos filtros selecionados. Tente limpar os filtros ou cadastrar uma nova publicação.
+          </p>
+          <div class="mt-2 flex items-center gap-2">
+            <button (click)="limparFiltros()" class="px-4 py-2 rounded-xl bg-surface-container hover:bg-surface-container-high text-xs font-label font-bold text-on-surface transition-colors">
+              Limpar Filtros
+            </button>
+            @if (isLoggedIn) {
+              <button (click)="novo()" class="px-4 py-2 rounded-xl bg-primary text-on-primary hover:bg-primary-container text-xs font-label font-bold transition-colors">
+                Cadastrar Novo Artigo
+              </button>
+            }
+          </div>
+        </div>
+      }
+
+    </section>
+
+  </main>
+
+  <!-- RODAPÉ DA PLATAFORMA -->
+  <footer class="w-full bg-surface-container-low border-t border-surface-variant/30 py-10 mt-12">
+    <div class="max-w-7xl mx-auto px-6 lg:px-12 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="flex flex-col items-center md:items-start">
+        <span class="font-headline font-bold text-on-surface text-base">TanninsDB • Rede Aberta de Pesquisa em Fitocompostos</span>
+        <p class="text-xs text-on-surface-variant mt-1 font-body">
+          Universidade Federal do Rio Grande do Norte — Escola Agrícola de Jundiaí (EAJ)
+        </p>
+      </div>
+      <div class="flex flex-wrap items-center justify-center gap-6 text-xs text-on-surface-variant font-label">
+        <span class="flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-base text-primary">verified_user</span>
+          Princípios FAIR
+        </span>
+        <span class="flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-base text-primary">lock_open</span>
+          Ciência Aberta (CC-BY 4.0)
+        </span>
+        <span class="flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-base text-primary">school</span>
+          TCC 2 — CST em ADS
+        </span>
+      </div>
+    </div>
+  </footer>
+
 </div>

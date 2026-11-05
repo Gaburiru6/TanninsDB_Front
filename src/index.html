@@ -1,13 +1,81 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
   <meta charset="utf-8">
-  <title>TanninsdbFront</title>
+  <title>TanninsDB — Plataforma Científica de Taninos</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  
+  <!-- Google Fonts: Literata & Nunito Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400..700;1,7..72,400..700&family=Nunito+Sans:ital,opsz,wght@0,6..12,300..800;1,6..12,300..800&display=swap" rel="stylesheet">
+  
+  <!-- Material Symbols Outlined -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN com Tema Terra (Organic Design) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#4a7c59",
+            "primary-container": "#78a886",
+            "on-primary": "#ffffff",
+            "on-primary-container": "#d8f0de",
+            "primary-fixed": "#c8e8d0",
+            "primary-fixed-dim": "#8ecf9e",
+            "on-primary-fixed": "#002110",
+            "secondary": "#6b6358",
+            "secondary-container": "#f0e8db",
+            "on-secondary": "#ffffff",
+            "on-secondary-container": "#5e5548",
+            "tertiary": "#705c30",
+            "tertiary-container": "#c4a66a",
+            "on-tertiary": "#ffffff",
+            "on-tertiary-container": "#554020",
+            "tertiary-fixed": "#f8e0a8",
+            "tertiary-fixed-dim": "#dcc48e",
+            "surface": "#faf6f0",
+            "surface-dim": "#dbd7cf",
+            "surface-bright": "#faf6f0",
+            "surface-variant": "#e4e0d8",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-low": "#f5f1ea",
+            "surface-container": "#f0ece4",
+            "surface-container-high": "#eae6de",
+            "surface-container-highest": "#e4e0d8",
+            "on-surface": "#2e3230",
+            "on-surface-variant": "#4a4e4a",
+            "outline": "#74796e",
+            "outline-variant": "#c4c8bc",
+            "error": "#b83230",
+            "error-container": "#ffdad8",
+            "on-error": "#ffffff",
+            "on-error-container": "#690005"
+          },
+          fontFamily: {
+            headline: ["Literata", "serif"],
+            display: ["Literata", "serif"],
+            body: ["Nunito Sans", "sans-serif"],
+            label: ["Nunito Sans", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.5rem",
+            "lg": "1rem",
+            "xl": "1.5rem",
+            "full": "9999px"
+          }
+        }
+      }
+    };
+  </script>
 </head>
-<body>
+<body class="bg-surface font-body text-on-surface antialiased min-h-screen">
   <app-root></app-root>
 </body>
 </html>

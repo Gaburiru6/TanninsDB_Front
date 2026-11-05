@@ -9,12 +9,16 @@ export interface ArtigoRequest {
   local: string;
   partePlanta: string;
   estacao: string;
-  tcondensados: number;
-  thidrolisaveis: number;
+  tcondensados?: number;
+  thidrolisaveis?: number;
+  tCondensados?: number;
+  tHidrolisaveis?: number;
+  latitude?: number;
+  longitude?: number;
 }
 
 export interface ArtigoResponse extends ArtigoRequest {
   id: number;
   status: string;
-  nomeAutor: string;
+  nomeAutor?: string;
 }

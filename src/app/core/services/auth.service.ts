@@ -21,10 +21,15 @@ export class AuthService {
     return this.http.get<AuthResponse>(`${this.apiUrl}/auth/orcid/callback?code=${code}`);
   }
 
+  devLogin() {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/auth/dev`, {});
+  }
+
   saveToken(response: AuthResponse): void {
     localStorage.setItem('token', response.access_token);
-    localStorage.setItem('name', response.name);
-    localStorage.setItem('orcid', response.orcid);
+    if (response.name) localStorage.setItem('name', response.name);
+    if (response.orcid) localStorage.setItem('orcid', response.orcid);
+    if (response.role) localStorage.setItem('role', response.role);
   }
 
   getToken(): string | null {
@@ -35,12 +40,16 @@ export class AuthService {
     return localStorage.getItem('name');
   }
 
+  getRole(): string | null {
+    return localStorage.getItem('role');
+  }
+
   isLoggedIn(): boolean {
     return !!this.getToken();
   }
 
   logout(): void {
     localStorage.clear();
-    this.router.navigate(['/login']);
+    this.router.navigate(['/artigos']);
   }
 }

@@ -1,0 +1,15 @@
+services:
+  tannins_front:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tannins_front
+    restart: always
+    ports:
+      - "${FRONT_PORT:-80}:80"
+    networks:
+      - tannins_network
+
+networks:
+  tannins_network:
+    name: tannins_network

@@ -18,7 +18,7 @@ export const routes: Routes = [
   { path: '', redirectTo: 'artigos', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'auth/callback', component: LoginComponent },
-  { path: 'artigos', component: ArtigosComponent, canActivate: [authGuard] },
+  { path: 'artigos', component: ArtigosComponent },
   { path: 'artigos/novo', component: ArtigoFormComponent, canActivate: [authGuard] },
   { path: 'artigos/editar/:id', component: ArtigoFormComponent, canActivate: [authGuard] },
   { path: '**', redirectTo: 'artigos' }

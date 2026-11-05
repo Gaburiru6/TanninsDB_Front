@@ -1,90 +1,414 @@
-<div class="container">
-  <header>
-    <h1>TanninsDB</h1>
-  </header>
+<div class="min-h-screen bg-surface flex flex-col font-body text-on-surface">
 
-  <div class="form-card">
-    <h2>{{ editando ? 'Editar Artigo' : 'Novo Artigo' }}</h2>
-
-    <div *ngIf="error" class="error">{{ error }}</div>
-
-    <form (ngSubmit)="salvar()">
-      <div class="form-grid">
-
-        <div class="form-group full">
-          <label>Título</label>
-          <input [(ngModel)]="artigo.titulo" name="titulo" required />
+  <!-- TOP HEADER -->
+  <header class="sticky top-0 w-full z-40 bg-surface/95 backdrop-blur-md shadow-[0_1px_8px_rgba(46,50,48,0.04)] border-b border-surface-variant/30">
+    <div class="h-20 max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between gap-6">
+      
+      <div class="flex items-center gap-3 shrink-0 cursor-pointer" (click)="cancelar()">
+        <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shadow-xs">
+          <span class="material-symbols-outlined text-2xl">spa</span>
         </div>
-
-        <div class="form-group full">
-          <label>Link (DOI)</label>
-          <input [(ngModel)]="artigo.link" name="link" />
+        <div class="flex flex-col">
+          <span class="font-headline text-xl font-bold tracking-tight text-on-surface leading-none">TanninsDB</span>
+          <span class="text-[11px] font-label uppercase tracking-widest text-primary font-semibold mt-1">Catalogação Científica</span>
         </div>
-
-        <div class="form-group">
-          <label>Espécie</label>
-          <input [(ngModel)]="artigo.especie" name="especie" required />
-        </div>
-
-        <div class="form-group">
-          <label>Local</label>
-          <input [(ngModel)]="artigo.local" name="local" />
-        </div>
-
-        <div class="form-group">
-          <label>Parte da Planta</label>
-          <input [(ngModel)]="artigo.partePlanta" name="partePlanta" />
-        </div>
-
-        <div class="form-group">
-          <label>Estação</label>
-          <select [(ngModel)]="artigo.estacao" name="estacao">
-            <option value="" disabled selected>Selecione...</option>
-            <option value="Primavera">Primavera</option>
-            <option value="Verão">Verão</option>
-            <option value="Outono">Outono</option>
-            <option value="Inverno">Inverno</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label>Metodologia</label>
-          <input [(ngModel)]="artigo.metodologia" name="metodologia" />
-        </div>
-
-        <div class="form-group">
-          <label>Tipo de Extração</label>
-          <input [(ngModel)]="artigo.tipoExtracao" name="tipoExtracao" />
-        </div>
-
-        <div class="form-group">
-          <label>Fenólicos Totais</label>
-          <input [ngModel]="artigo.fenolicos" (ngModelChange)="tratarNumero('fenolicos', $event)" name="fenolicos" type="text" inputmode="decimal" />
-        </div>
-
-        <div class="form-group">
-          <label>Taninos Totais</label>
-          <input [ngModel]="artigo.taninos" (ngModelChange)="tratarNumero('taninos', $event)" name="taninos" type="text" inputmode="decimal" />
-        </div>
-
-        <div class="form-group">
-          <label>Taninos Condensados</label>
-          <input [ngModel]="artigo.tcondensados" (ngModelChange)="tratarNumero('tcondensados', $event)" name="tcondensados" type="text" inputmode="decimal" />
-        </div>
-
-        <div class="form-group">
-          <label>Taninos Hidrolisáveis</label>
-          <input [ngModel]="artigo.thidrolisaveis" (ngModelChange)="tratarNumero('thidrolisaveis', $event)" name="thidrolisaveis" type="text" inputmode="decimal" />
-        </div>
-
       </div>
 
-      <div class="form-actions">
-        <button type="button" (click)="cancelar()" class="btn-secondary">Cancelar</button>
-        <button type="submit" [disabled]="loading" class="btn-primary">
-          {{ loading ? 'Salvando...' : 'Salvar' }}
+      <div class="flex items-center gap-3">
+        <button (click)="cancelar()" class="px-4 py-2 rounded-xl text-xs font-label font-bold text-on-surface-variant hover:text-on-surface bg-surface-container hover:bg-surface-container-high transition-colors flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-base">arrow_back</span>
+          Voltar ao Catálogo
         </button>
       </div>
+
+    </div>
+  </header>
+
+  <main class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-8">
+    
+    <!-- CONTEXTUAL HEADER -->
+    <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-4 border-b border-surface-variant/30">
+      <div class="max-w-3xl">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-xs font-label font-bold uppercase tracking-wider mb-3">
+          <span class="material-symbols-outlined text-sm text-primary">biotech</span>
+          {{ editando ? 'Edição de Registro Científico' : 'Formulário de Catalogação Científica' }}
+        </div>
+        <h1 class="font-headline text-3xl sm:text-4xl font-bold tracking-tight text-on-surface leading-tight">
+          {{ editando ? 'Editar Artigo Científico' : 'Cadastrar Novo Artigo Científico' }}
+        </h1>
+        <p class="font-body text-sm sm:text-base text-on-surface-variant mt-2 leading-relaxed">
+          Insira os dados bibliográficos, procedência geográfica e parâmetros fitoquímicos quantitativos de acordo com o protocolo da plataforma.
+        </p>
+      </div>
+
+      <div class="flex items-center gap-3 shrink-0 bg-surface-container-low px-4 py-3 rounded-xl border border-outline-variant/30">
+        <div class="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></div>
+        <div class="text-xs font-label">
+          <span class="font-bold text-on-surface block">Padrão FAIR & FitoTax</span>
+          <span class="text-on-surface-variant text-[11px]">Campos com georreferenciamento</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- MENSAGEM DE ERRO -->
+    @if (error) {
+      <div class="p-4 rounded-xl bg-error-container text-error text-xs font-label flex items-center gap-2 shadow-xs">
+        <span class="material-symbols-outlined text-lg">error</span>
+        <span>{{ error }}</span>
+      </div>
+    }
+
+    <!-- FORMULÁRIO EM DUAS COLUNAS (7 / 5) -->
+    <form (ngSubmit)="salvar()" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+      <!-- COLUNA DA ESQUERDA (7 colunas) -->
+      <div class="lg:col-span-7 flex flex-col gap-6">
+
+        <!-- SEÇÃO 01: Identificação Bibliográfica -->
+        <section class="bg-surface-container-low rounded-2xl p-6 sm:p-8 shadow-xs border border-outline-variant/30 flex flex-col gap-5">
+          <div class="flex items-center justify-between pb-3 border-b border-surface-variant/30">
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary font-headline font-bold text-sm">01</span>
+              <div>
+                <h2 class="font-headline text-lg sm:text-xl font-bold text-on-surface">Identificação Bibliográfica</h2>
+                <p class="text-xs text-on-surface-variant font-label">Indexação por DOI e metadados de publicação</p>
+              </div>
+            </div>
+            <span class="material-symbols-outlined text-secondary text-2xl">menu_book</span>
+          </div>
+
+          <!-- Campo DOI / Link -->
+          <div>
+            <label class="block text-xs font-label uppercase tracking-wider font-bold text-on-surface-variant mb-2">
+              Identificador Digital de Objeto (DOI) ou Link da Publicação
+            </label>
+            <div class="flex flex-col sm:flex-row gap-2">
+              <div class="relative flex-1 flex items-center bg-surface rounded-xl px-3.5 py-2.5 border border-outline-variant/30 focus-within:ring-2 focus-within:ring-primary shadow-xs">
+                <span class="text-xs text-on-surface-variant font-mono mr-1 select-none">https://</span>
+                <input [(ngModel)]="artigo.link" name="link" placeholder="doi.org/10.1016/j.fitote.2023.105480" class="w-full bg-transparent text-sm text-on-surface focus:outline-none font-mono" />
+              </div>
+              <button type="button" (click)="buscarDoi()" [disabled]="doiBuscando" class="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface text-xs font-label font-bold transition-all shrink-0">
+                <span class="material-symbols-outlined text-base text-primary" [ngClass]="{'animate-spin': doiBuscando}">sync</span>
+                {{ doiBuscando ? 'Buscando...' : 'Preenchimento Rápido' }}
+              </button>
+            </div>
+            <p class="text-[11px] text-on-surface-variant mt-1.5">Link direto para o artigo científico na íntegra.</p>
+          </div>
+
+          <!-- Título do Artigo -->
+          <div>
+            <label class="block text-xs font-label uppercase tracking-wider font-bold text-on-surface-variant mb-2">
+              Título Completo do Artigo Científico *
+            </label>
+            <textarea [(ngModel)]="artigo.titulo" name="titulo" required rows="3" placeholder="Ex: Determinação de taninos condensados na casca de Mimosa tenuiflora sob diferentes regimes sazonais..." class="w-full bg-surface rounded-xl p-3.5 text-sm text-on-surface border border-outline-variant/30 focus:outline-none focus:ring-2 focus:ring-primary leading-relaxed shadow-xs"></textarea>
+          </div>
+        </section>
+
+        <!-- SEÇÃO 02: Caracterização Botânica & Coleta -->
+        <section class="bg-surface-container-low rounded-2xl p-6 sm:p-8 shadow-xs border border-outline-variant/30 flex flex-col gap-5">
+          <div class="flex items-center justify-between pb-3 border-b border-surface-variant/30">
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary font-headline font-bold text-sm">02</span>
+              <div>
+                <h2 class="font-headline text-lg sm:text-xl font-bold text-on-surface">Caracterização Botânica & Coleta</h2>
+                <p class="text-xs text-on-surface-variant font-label">Espécie vegetal, órgão da planta e sazonalidade</p>
+              </div>
+            </div>
+            <span class="material-symbols-outlined text-secondary text-2xl">eco</span>
+          </div>
+
+          <!-- Espécie Botânica -->
+          <div>
+            <label class="block text-xs font-label uppercase tracking-wider font-bold text-on-surface-variant mb-2">
+              Espécie Botânica (Binômio Latino) *
+            </label>
+            <div class="relative flex items-center bg-surface rounded-xl px-3.5 py-2.5 border border-outline-variant/30 focus-within:ring-2 focus-within:ring-primary shadow-xs">
+              <span class="material-symbols-outlined text-primary text-lg mr-2">yard</span>
+              <input [(ngModel)]="artigo.especie" name="especie" required placeholder="Ex: Mimosa tenuiflora (Willd.) Poir." class="w-full bg-transparent text-sm italic font-headline text-on-surface focus:outline-none" />
+            </div>
+          </div>
+
+          <!-- Parte da Planta Utilizada -->
+          <div>
+            <label class="block text-xs font-label uppercase tracking-wider font-bold text-on-surface-variant mb-2">
+              Parte da Planta Utilizada na Extração *
+            </label>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              @for (p of partesPlanta; track p.label) {
+                <button type="button" (click)="artigo.partePlanta = p.label" class="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl border text-xs font-label font-bold transition-all text-center shadow-xs"
+                        [ngClass]="{
+                          'bg-primary text-on-primary border-primary': artigo.partePlanta === p.label,
+                          'bg-surface hover:bg-surface-container text-on-surface border-outline-variant/30': artigo.partePlanta !== p.label
+                        }">
+                  <span class="material-symbols-outlined text-base">{{ p.icone }}</span>
+                  {{ p.label }}
+                </button>
+              }
+            </div>
+          </div>
+
+          <!-- Estação Climática da Coleta -->
+          <div>
+            <label class="block text-xs font-label uppercase tracking-wider font-bold text-on-surface-variant mb-2">
+              Estação Climática da Coleta Amostral *
+            </label>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+              @for (est of estacoes; track est.valor) {
+                <button type="button" (click)="artigo.estacao = est.valor" class="flex flex-col items-center justify-center p-3 rounded-xl border transition-all text-center shadow-xs"
+                        [ngClass]="{
+                          'bg-tertiary-container text-on-tertiary-container border-tertiary': artigo.estacao === est.valor,
+                          'bg-surface hover:bg-surface-container text-on-surface border-outline-variant/30': artigo.estacao !== est.valor
+                        }">
+                  <span class="material-symbols-outlined text-xl mb-1 text-tertiary">{{ est.icone }}</span>
+                  <span class="text-xs font-label font-bold">{{ est.valor }}</span>
+                  <span class="text-[10px] opacity-75 font-body">{{ est.subtitulo }}</span>
+                </button>
+              }
+            </div>
+          </div>
+        </section>
+
+        <!-- SEÇÃO 03: Metodologia e Processamento -->
+        <section class="bg-surface-container-low rounded-2xl p-6 sm:p-8 shadow-xs border border-outline-variant/30 flex flex-col gap-5">
+          <div class="flex items-center justify-between pb-3 border-b border-surface-variant/30">
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary font-headline font-bold text-sm">03</span>
+              <div>
+                <h2 class="font-headline text-lg sm:text-xl font-bold text-on-surface">Metodologia & Extração</h2>
+                <p class="text-xs text-on-surface-variant font-label">Protocolo analítico e regime de processamento</p>
+              </div>
+            </div>
+            <span class="material-symbols-outlined text-secondary text-2xl">science</span>
+          </div>
+
+          <!-- Regime Térmico de Extração -->
+          <div>
+            <label class="block text-xs font-label uppercase tracking-wider font-bold text-on-surface-variant mb-2">
+              Regime Térmico de Extração *
+            </label>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div (click)="artigo.tipoExtracao = 'Extração a Frio (T ≤ 25°C)'" class="p-4 rounded-xl border cursor-pointer transition-all flex flex-col gap-1.5 shadow-xs"
+                   [ngClass]="{
+                     'bg-surface-container-highest border-primary ring-2 ring-primary/40': artigo.tipoExtracao.includes('Frio'),
+                     'bg-surface hover:bg-surface-container border-outline-variant/30': !artigo.tipoExtracao.includes('Frio')
+                   }">
+                <div class="flex items-center justify-between">
+                  <span class="font-headline font-bold text-xs sm:text-sm text-on-surface flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-primary text-lg">ac_unit</span>
+                    Extração a Frio
+                  </span>
+                  <span class="text-[10px] uppercase font-bold text-primary font-label px-2 py-0.5 rounded bg-primary-fixed">T ≤ 25°C</span>
+                </div>
+                <p class="text-xs text-on-surface-variant leading-relaxed font-body">
+                  Maceração estática sob abrigo de luz, maceração dinâmica ou ultrassom.
+                </p>
+              </div>
+
+              <div (click)="artigo.tipoExtracao = 'Extração a Quente (T > 50°C)'" class="p-4 rounded-xl border cursor-pointer transition-all flex flex-col gap-1.5 shadow-xs"
+                   [ngClass]="{
+                     'bg-surface-container-highest border-primary ring-2 ring-primary/40': artigo.tipoExtracao.includes('Quente'),
+                     'bg-surface hover:bg-surface-container border-outline-variant/30': !artigo.tipoExtracao.includes('Quente')
+                   }">
+                <div class="flex items-center justify-between">
+                  <span class="font-headline font-bold text-xs sm:text-sm text-on-surface flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-error text-lg">local_fire_department</span>
+                    Extração a Quente
+                  </span>
+                  <span class="text-[10px] uppercase font-bold text-primary font-label px-2 py-0.5 rounded bg-primary-fixed">T > 50°C</span>
+                </div>
+                <p class="text-xs text-on-surface-variant leading-relaxed font-body">
+                  Soxhlet, refluxo aquoso/hidroalcoólico ou banho-maria termostatizado.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Método Analítico -->
+          <div>
+            <label class="block text-xs font-label uppercase tracking-wider font-bold text-on-surface-variant mb-2">
+              Método Analítico Principal de Quantificação *
+            </label>
+            <select [(ngModel)]="artigo.metodologia" name="metodologia" class="w-full bg-surface rounded-xl px-3.5 py-3 text-xs sm:text-sm text-on-surface border border-outline-variant/30 focus:outline-none focus:ring-2 focus:ring-primary shadow-xs font-body">
+              @for (m of metodologias; track m) {
+                <option [value]="m">{{ m }}</option>
+              }
+            </select>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- COLUNA DA DIREITA (5 colunas) -->
+      <div class="lg:col-span-5 flex flex-col gap-6">
+
+        <!-- SEÇÃO 04: Geolocalização com Minimapa Interativo -->
+        <section class="bg-surface-container-low rounded-2xl p-6 sm:p-8 shadow-xs border border-outline-variant/30 flex flex-col gap-5">
+          <div class="flex items-center justify-between pb-3 border-b border-surface-variant/30">
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary font-headline font-bold text-sm">04</span>
+              <div>
+                <h2 class="font-headline text-lg sm:text-xl font-bold text-on-surface">Geolocalização</h2>
+                <p class="text-xs text-on-surface-variant font-label">Origem biogeográfica do material vegetal</p>
+              </div>
+            </div>
+            <span class="material-symbols-outlined text-secondary text-2xl">location_on</span>
+          </div>
+
+          <!-- Campo Localidade -->
+          <div>
+            <label class="block text-xs font-label uppercase tracking-wider font-bold text-on-surface-variant mb-1.5">
+              Localidade / Município / Bioma *
+            </label>
+            <div class="relative flex items-center bg-surface rounded-xl px-3 py-2 border border-outline-variant/30 focus-within:ring-2 focus-within:ring-primary shadow-xs">
+              <span class="material-symbols-outlined text-primary text-lg mr-2">search</span>
+              <input [(ngModel)]="artigo.local" name="local" required placeholder="Ex: Caicó - RN, Semiárido" class="w-full bg-transparent text-xs text-on-surface focus:outline-none font-body" />
+            </div>
+          </div>
+
+          <!-- Minimapa Leaflet -->
+          <div class="flex flex-col gap-2">
+            <div class="flex items-center justify-between text-xs font-label">
+              <span class="text-on-surface-variant">Clique no mapa para marcar as coordenadas:</span>
+              <button type="button" (click)="obterGpsAtual()" class="text-primary hover:underline flex items-center gap-1 font-bold">
+                <span class="material-symbols-outlined text-sm">my_location</span>
+                GPS Atual
+              </button>
+            </div>
+
+            <div class="w-full h-56 rounded-xl overflow-hidden border border-outline-variant/30 shadow-xs relative">
+              <div id="minimap" class="w-full h-full z-10"></div>
+            </div>
+          </div>
+
+          <!-- Coordenadas Numéricas -->
+          <div class="grid grid-cols-2 gap-3 pt-1">
+            <div>
+              <span class="text-[10px] uppercase font-bold text-on-surface-variant block mb-1">Latitude (GPS)</span>
+              <input [(ngModel)]="artigo.latitude" name="latitude" type="number" step="0.000001" class="w-full bg-surface rounded-lg px-3 py-2 text-xs font-mono text-on-surface border border-outline-variant/30 focus:outline-none focus:ring-1 focus:ring-primary shadow-xs" />
+            </div>
+            <div>
+              <span class="text-[10px] uppercase font-bold text-on-surface-variant block mb-1">Longitude (GPS)</span>
+              <input [(ngModel)]="artigo.longitude" name="longitude" type="number" step="0.000001" class="w-full bg-surface rounded-lg px-3 py-2 text-xs font-mono text-on-surface border border-outline-variant/30 focus:outline-none focus:ring-1 focus:ring-primary shadow-xs" />
+            </div>
+          </div>
+        </section>
+
+        <!-- SEÇÃO 05: Métricas Fitoquímicas -->
+        <section class="bg-surface-container-low rounded-2xl p-6 sm:p-8 shadow-xs border border-outline-variant/30 flex flex-col gap-5">
+          <div class="flex items-center justify-between pb-3 border-b border-surface-variant/30">
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary font-headline font-bold text-sm">05</span>
+              <div>
+                <h2 class="font-headline text-lg sm:text-xl font-bold text-on-surface">Métricas Fitoquímicas</h2>
+                <p class="text-xs text-on-surface-variant font-label">Concentrações e balanço estrutural (%)</p>
+              </div>
+            </div>
+            <span class="material-symbols-outlined text-secondary text-2xl">scale</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <!-- Fenólicos Totais -->
+            <div class="bg-surface p-3.5 rounded-xl border border-outline-variant/30 flex flex-col gap-1.5 shadow-xs">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-label font-bold text-on-surface">Fenólicos Totais</span>
+                <span class="text-[10px] px-1.5 py-0.5 rounded bg-surface-container font-mono text-on-surface-variant">FT</span>
+              </div>
+              <input [(ngModel)]="artigo.fenolicos" name="fenolicos" type="number" step="0.01" class="w-full bg-transparent font-mono text-lg font-bold text-on-surface focus:outline-none" />
+              <span class="text-[10px] text-on-surface-variant font-body">% ou mg/g extrato</span>
+            </div>
+
+            <!-- Taninos Totais -->
+            <div class="bg-surface p-3.5 rounded-xl border border-outline-variant/30 flex flex-col gap-1.5 shadow-xs">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-label font-bold text-on-surface">Taninos Totais</span>
+                <span class="text-[10px] px-1.5 py-0.5 rounded bg-surface-container font-mono text-on-surface-variant">TT</span>
+              </div>
+              <input [(ngModel)]="artigo.taninos" name="taninos" type="number" step="0.01" class="w-full bg-transparent font-mono text-lg font-bold text-on-surface focus:outline-none" />
+              <span class="text-[10px] text-on-surface-variant font-body">% ou mg equivalente/g</span>
+            </div>
+
+            <!-- Taninos Condensados -->
+            <div class="bg-surface p-3.5 rounded-xl border border-outline-variant/30 flex flex-col gap-1.5 shadow-xs">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-label font-bold text-primary flex items-center gap-1">
+                  <span class="w-2 h-2 rounded-full bg-primary"></span>
+                  Condensados
+                </span>
+                <span class="text-[10px] px-1.5 py-0.5 rounded bg-primary/10 text-primary font-mono">TC</span>
+              </div>
+              <input [(ngModel)]="artigo.tcondensados" name="tcondensados" type="number" step="0.01" class="w-full bg-transparent font-mono text-lg font-bold text-primary focus:outline-none" />
+              <span class="text-[10px] text-on-surface-variant font-body">% proantocianidinas</span>
+            </div>
+
+            <!-- Taninos Hidrolisáveis -->
+            <div class="bg-surface p-3.5 rounded-xl border border-outline-variant/30 flex flex-col gap-1.5 shadow-xs">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-label font-bold text-tertiary flex items-center gap-1">
+                  <span class="w-2 h-2 rounded-full bg-tertiary"></span>
+                  Hidrolisáveis
+                </span>
+                <span class="text-[10px] px-1.5 py-0.5 rounded bg-tertiary/10 text-tertiary font-mono">TH</span>
+              </div>
+              <input [(ngModel)]="artigo.thidrolisaveis" name="thidrolisaveis" type="number" step="0.01" class="w-full bg-transparent font-mono text-lg font-bold text-tertiary focus:outline-none" />
+              <span class="text-[10px] text-on-surface-variant font-body">% galotaninos/elagitaninos</span>
+            </div>
+          </div>
+
+          <!-- Barra de Proporção Dinâmica Condensados vs Hidrolisáveis -->
+          <div class="bg-surface p-4 rounded-xl border border-outline-variant/30 flex flex-col gap-2.5 shadow-xs">
+            <div class="flex items-center justify-between">
+              <span class="font-headline text-xs font-bold uppercase tracking-wider text-on-surface">Proporção Condensados vs. Hidrolisáveis</span>
+              <span class="text-xs font-mono font-bold text-primary">{{ proporcaoBadge }}</span>
+            </div>
+
+            <div class="w-full h-3 bg-surface-container rounded-full overflow-hidden flex shadow-inner">
+              <div class="h-full bg-primary transition-all duration-300" [style.width.%]="pctCondensados"></div>
+              <div class="h-full bg-tertiary transition-all duration-300" [style.width.%]="pctHidrolisaveis"></div>
+            </div>
+
+            <div class="flex items-center justify-between text-[11px] font-label text-on-surface-variant pt-1">
+              <div class="flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-primary"></span>
+                <span>Condensados ({{ pctCondensados }}%)</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-tertiary"></span>
+                <span>Hidrolisáveis ({{ pctHidrolisaveis }}%)</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- BARRA DE AÇÕES INFERIOR (12 colunas) -->
+      <div class="lg:col-span-12 flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 pb-12 border-t border-surface-variant/30">
+        
+        <div class="flex items-center gap-2 text-xs text-on-surface-variant font-label">
+          <span class="material-symbols-outlined text-primary text-lg">verified_user</span>
+          <span>Indexação interoperável sob princípios <strong>FAIR</strong> e licença <strong>CC-BY 4.0</strong>.</span>
+        </div>
+
+        <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
+          <button type="button" (click)="cancelar()" class="flex-1 sm:flex-initial px-5 py-3 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface font-label font-bold text-xs sm:text-sm transition-all">
+            Cancelar
+          </button>
+
+          <button type="submit" [disabled]="loading" class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-primary text-on-primary hover:bg-primary-container font-label font-bold text-xs sm:text-sm transition-all shadow-md">
+            @if (loading) {
+              <span class="material-symbols-outlined text-base animate-spin">progress_activity</span>
+              Salvando...
+            } @else {
+              <span class="material-symbols-outlined text-base">{{ editando ? 'save' : 'publish' }}</span>
+              {{ editando ? 'Atualizar Artigo' : 'Enviar Artigo para Indexação' }}
+            }
+          </button>
+        </div>
+
+      </div>
+
     </form>
-  </div>
+
+  </main>
+
 </div>

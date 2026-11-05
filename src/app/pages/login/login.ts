@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit {
           this.router.navigate(['/artigos']);
         },
         error: () => {
-          this.error = 'Erro ao autenticar. Tente novamente.';
+          this.error = 'Erro ao autenticar com ORCID. Tente novamente.';
           this.loading = false;
         }
       });
@@ -39,5 +39,23 @@ export class LoginComponent implements OnInit {
 
   login(): void {
     this.authService.loginWithOrcid();
+  }
+
+  loginDev(): void {
+    this.loading = true;
+    this.authService.devLogin().subscribe({
+      next: (response) => {
+        this.authService.saveToken(response);
+        this.router.navigate(['/artigos']);
+      },
+      error: () => {
+        this.error = 'Ambiente de desenvolvimento não disponível ou erro no servidor.';
+        this.loading = false;
+      }
+    });
+  }
+
+  voltar(): void {
+    this.router.navigate(['/artigos']);
   }
 }
